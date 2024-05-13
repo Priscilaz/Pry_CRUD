@@ -1,21 +1,23 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Pry_CRUD.Data;
 using Pry_CRUD.Models;
 using System.Diagnostics;
 
 namespace Pry_CRUD.Controllers
 {
-    public class HomeController : Controller
+    public class InicioController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger)
+        
+        private readonly ApplicationDbContext _contexto;
+        public InicioController(ApplicationDbContext contexto)
         {
-            _logger = logger;
+            _contexto = contexto;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            return View(await _contexto.Contacto.ToListAsync());
         }
 
         public IActionResult Privacy()
