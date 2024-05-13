@@ -14,11 +14,87 @@ namespace Pry_CRUD.Controllers
         {
             _contexto = contexto;
         }
-
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
             return View(await _contexto.Contacto.ToListAsync());
         }
+
+        [HttpGet]
+        public IActionResult Crear()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Crear(Contacto contacto)
+        {
+            if (ModelState.IsValid)
+            {
+               //Agregar la fecha y hora actual
+               contacto.Fechacreacion=DateTime.Now;
+                
+                
+                _contexto.Contacto.Add(contacto);
+                await _contexto.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+
+            }
+            
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult Editar(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var contacto = _contexto.Contacto.Find(id);
+            if(contacto == null)
+            {
+                return NotFound();
+            }
+
+            return View(contacto);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Editar(Contacto contacto)
+        {
+            if (ModelState.IsValid)
+            {
+                
+                _contexto.Update(contacto);
+                await _contexto.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+
+            }
+
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult Detalle(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var contacto = _contexto.Contacto.Find(id);
+            if (contacto == null)
+            {
+                return NotFound();
+            }
+
+            return View(contacto);
+        }
+
 
         public IActionResult Privacy()
         {
