@@ -94,7 +94,39 @@ namespace Pry_CRUD.Controllers
 
             return View(contacto);
         }
+        [HttpGet]
+        public IActionResult Borrar(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
 
+            var contacto = _contexto.Contacto.Find(id);
+            if (contacto == null)
+            {
+                return NotFound();
+            }
+
+            return View(contacto);
+        }
+        //Estoy llamando al metodo borrar desde la vista y la funcion puede tene rotro nombre
+        [HttpPost, ActionName("Borrar")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> BorrarContacto(int? id)
+        {
+            
+                var contacto = await _contexto.Contacto.FindAsync(id);
+                if(contacto == null)
+                {
+                    return View();
+                }
+                //Borrado
+                _contexto.Contacto.Remove(contacto);
+                await _contexto.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+             
+        }
 
         public IActionResult Privacy()
         {
